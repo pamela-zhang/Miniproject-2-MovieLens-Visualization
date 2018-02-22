@@ -40,3 +40,15 @@ m_cols = 2):
 data, X_train, y_train, X_test, y_test = load_data('data/data.txt',
 'data/train.txt', 'data/test.txt', 'data/movies.txt')
 '''
+
+def error(y, y_pred):
+  '''
+  Returns classification error, given the actual and predicted y-values.
+  '''
+  return np.mean(y != y_pred)
+
+def accuracy(y, y_pred):
+  '''
+  Returns classification accuracy, given the actual and predicted y-values.
+  '''
+  return np.mean(y == y_pred)
