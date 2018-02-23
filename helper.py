@@ -33,11 +33,11 @@ m_cols = 2):
     X_test = test_data[:, :-1]
     y_test = test_data[:,-1]
 
-    return data, X_train, y_train, X_test, y_test
+    return data, X_train, y_train, X_test, y_test, movies_data
 
 # Example usage of load_data
 '''
-data, X_train, y_train, X_test, y_test = load_data('data/data.txt',
+data, X_train, y_train, X_test, y_test, movies_data = load_data('data/data.txt',
 'data/train.txt', 'data/test.txt', 'data/movies.txt')
 '''
 
