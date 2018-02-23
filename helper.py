@@ -29,16 +29,52 @@ def load_data(data_file, movies_file, skiprows = 0):
     return data, titles, movies_data, genres
 
 # Example usage of load_data
-data, titles, movies_data, genres = load_data('data/data.txt', 'data/movies.txt')
+# data, titles, movies_data, genres = load_data('data/data.txt', 'data/movies.txt')
 
-def error(y, y_pred):
-  '''
-  Returns classification error, given the actual and predicted y-values.
-  '''
-  return np.mean(y != y_pred)
+def get_popular_best_movies(data, movies_data):
+  # Array stores total of user ratings and number of ratings
+  movie_ratings = np.zeros((len(movies_data), 2))
 
-def accuracy(y, y_pred):
+  # Loop through data set
+  for d in data:
+      # Add user's rating for corresponding movie
+      movie_ratings[int(d[1] - 1)][0] += d[2]
+      # Count of ratings per movie
+      movie_ratings[int(d[1] - 1)][1] += 1
+
   '''
-  Returns classification accuracy, given the actual and predicted y-values.
+  Given an input array of movie ratings and scalar n_max, return the indices in 
+  lst of the n_max highest values in the list.
+
+  Input:
+      - lst: list of values to sort and select from
+      - n_max: desired n number of movies with certain attribute
+
+  Output:
+      - max_positions: indices of n_max movies with most number of ratings
+
   '''
-  return np.mean(y == y_pred)
+  def n_max_pos(lst, n_max):
+    sorted_pos = np.argsort(lst)
+    max_positions = sorted_pos[-1*n_max:]
+    return max_positions
+
+  # Calculate average rating score for each movie
+  avgs = np.zeros(len(movies_data))
+  for i, m in enumerate(movie_ratings):
+      # all_ratings[i] = m[1]
+      if m[1] != 0:
+          avgs[i] = m[0] / m[1]
+        
+  # Finding top 10 movies with the most ratings
+  rating_per_mov = movie_ratings[:,1]
+  most_ratings_pos = n_max_pos(rating_per_mov, 10)
+
+  # Find average ratings of the 10 movies with most number of ratings
+  most_ratings = avgs[most_ratings_pos]
+
+  # Finding top 10 movies with highest average ratings
+  best_movies_pos = n_max_pos(avgs, 10)
+  best_avg = avgs[best_movies_pos]
+
+  return most_ratings_pos, best_movies_pos
