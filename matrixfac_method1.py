@@ -147,8 +147,7 @@ def main():
   # ----------------------------------------------
 
   # Plot 10 movies of our choice.
-  movies = [0, 49, 68, 70, 94, 97, 126, 248, 312, 385]
-  for m in movies:
+  for m in [0, 49, 68, 70, 94, 97, 126, 248, 312, 385]:
     plt.plot(V_proj[0, m], V_proj[1, m], 'o', color='#ffa500')
     plt.annotate(titles[m].strip('"'), (V_proj[0, m], V_proj[1, m]))
   plt.title('Visualization of 10 Movies (HW5 Matrix Factorization)')
@@ -173,11 +172,29 @@ def main():
   plt.title('Visualization of 10 Best Movies (HW5 Matrix Factorization)')
   plt.savefig('images/method1_vis_10best.png', bbox_inches='tight', dpi=300)
 
-  # TODO: Plot 10 movies from <GENRE 1>.
+  # Plot 10 Western movies.
+  plt.figure()
+  for m in (np.where([movies_data[:, 18] == 1])[1])[:10]:
+    plt.plot(V_proj[0, m], V_proj[1, m], 'o', color='#ffa500')
+    plt.annotate(titles[m].strip('"'), (V_proj[0, m], V_proj[1, m]))
+  plt.title('Visualization of 10 Western Movies (HW5 Matrix Factorization)')
+  plt.savefig('images/method1_vis_western.png', bbox_inches='tight', dpi=300)
 
-  # TODO: Plot 10 movies from <GENRE 2>.
+  # Plot 10 Animation movies.
+  plt.figure()
+  for m in (np.where([movies_data[:, 3] == 1])[1])[:10]:
+    plt.plot(V_proj[0, m], V_proj[1, m], 'o', color='#ffa500')
+    plt.annotate(titles[m].strip('"'), (V_proj[0, m], V_proj[1, m]))
+  plt.title('Visualization of 10 Animation Movies (HW5 Matrix Factorization)')
+  plt.savefig('images/method1_vis_animation.png', bbox_inches='tight', dpi=300)
 
-  # TODO: Plot 10 movies from <GENRE 3>.
+  # Plot 10 Film-Noir movies.
+  plt.figure()
+  for m in (np.where([movies_data[:, 10] == 1])[1])[:10]:
+    plt.plot(V_proj[0, m], V_proj[1, m], 'o', color='#ffa500')
+    plt.annotate(titles[m].strip('"'), (V_proj[0, m], V_proj[1, m]))
+  plt.title('Visualization of 10 Film-Noir Movies (HW5 Matrix Factorization)')
+  plt.savefig('images/method1_vis_filmnoir.png', bbox_inches='tight', dpi=300)
 
 
 if __name__ == "__main__":
