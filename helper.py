@@ -21,8 +21,12 @@ m_cols = 2):
     X_test: x values for testing set as numpy ndarray
     y_test: x values for testing set as numpy ndarray
     '''
-    movies_data = np.loadtxt(movies_file, skiprows = skiprows, usecols = m_cols,
-     delimiter = '\t', encoding="cp1252")
+    movies_data = np.genfromtxt('data/movies.txt', delimiter = '\t',dtype= None, names=('movie id', 'movie title', 'unknown',
+                                                    'action', 'adventure','animation','childrens',
+                                                    'comedy', 'crime', 'documentary',
+                                                    'drama', 'fantasy','film-noir','horror',
+                                                    'musical', 'mystery', 'romance','sci-fi',
+                                                    'thriller', 'war', 'western'))
     data = np.loadtxt(data_file, skiprows = skiprows, delimiter = '\t')
     train_data = np.loadtxt(train_file, skiprows = skiprows, delimiter = '\t')
     test_data = np.loadtxt(test_file, skiprows = skiprows, delimiter = '\t')
