@@ -1,27 +1,36 @@
 # Third method for matrix factorization:
-# off-the-shelf implementation using sklearn.decomposition.
+# off-the-shelf implementation using Surprise.
 
 import numpy as np
 import matplotlib.pyplot as plt
 from helper import load_data, get_popular_best_movies
-from sklearn.preprocessing import scale
-from sklearn.decomposition import PCA
-
+from surprise import SVD, Dataset, Reader, accuracy
 
 def main():
 
-  # Load data from txt files.
-  data, titles, movies_data, genres = load_data('data/data.txt', 'data/movies.txt')
-  Y_train = np.loadtxt('data/train.txt').astype(int)
-  Y_test = np.loadtxt('data/test.txt').astype(int)
+  # Load the movielens-100k dataset.
+  data, titles, movies_data, genres = load_data('data/data.txt', 
+    'data/movies.txt')
+  reader = Reader(line_format='user item rating', sep='\t')
+  dataset = Dataset.load_from_file('data/data.txt', reader=reader)
+  trainset = dataset.build_full_trainset()
+
+  test_data = Dataset.load_from_file('data/test.txt', reader=reader)                                
+  testset = test_data.construct_testset(raw_testset=test_data.raw_ratings)    
 
   # ----------------------------------------------
-  # LEARN U AND V AND PROJECT TO 2D
+  # LEARN U AND V & PROJECT TO 2D
   # ----------------------------------------------
 
-  pca = PCA(n_components=2)
-  V_proj = pca.fit_transform(movies_data)
-  V_proj = V_proj.T
+  # Use SVD algorithm.
+  algo = SVD(n_factors=2, n_epochs=300)
+
+  algo.fit(trainset)
+  test_pred = algo.test(testset)
+
+  accuracy.rmse(test_pred)
+
+  V_proj = algo.qi.T
 
   # ----------------------------------------------
   # PLOT PROJECTED U AND V
@@ -31,7 +40,7 @@ def main():
   for m in [0, 49, 68, 70, 94, 97, 126, 248, 312, 385]:
     plt.plot(V_proj[0, m], V_proj[1, m], 'o', color='#ffa500')
     plt.annotate(titles[m].strip('"'), (V_proj[0, m], V_proj[1, m]))
-  plt.title('Visualization of 10 Movies (sklearn PCA)')
+  plt.title('Visualization of 10 Movies (Surprise)')
   plt.savefig('images/method3_vis_our10movies.png', bbox_inches='tight', dpi=300)
 
   # Get the indices (movie ID - 1) of the 10 most popular and 10 best movies.
@@ -42,7 +51,7 @@ def main():
   for m in most_pop_movies:
     plt.plot(V_proj[0, m], V_proj[1, m], 'o', color='#ffa500')
     plt.annotate(titles[m].strip('"'), (V_proj[0, m], V_proj[1, m]))
-  plt.title('Visualization of 10 Most Popular Movies (sklearn PCA)')
+  plt.title('Visualization of 10 Most Popular Movies (Surprise)')
   plt.savefig('images/method3_vis_10mostpopular.png', bbox_inches='tight', dpi=300)
 
   # Plot the 10 best movies.
@@ -50,7 +59,7 @@ def main():
   for m in best_movies:
     plt.plot(V_proj[0, m], V_proj[1, m], 'o', color='#ffa500')
     plt.annotate(titles[m].strip('"'), (V_proj[0, m], V_proj[1, m]))
-  plt.title('Visualization of 10 Best Movies (sklearn PCA)')
+  plt.title('Visualization of 10 Best Movies (Surprise)')
   plt.savefig('images/method3_vis_10best.png', bbox_inches='tight', dpi=300)
 
   # Plot 10 Western movies.
@@ -58,7 +67,7 @@ def main():
   for m in (np.where([movies_data[:, 18] == 1])[1])[:10]:
     plt.plot(V_proj[0, m], V_proj[1, m], 'o', color='#ffa500')
     plt.annotate(titles[m].strip('"'), (V_proj[0, m], V_proj[1, m]))
-  plt.title('Visualization of 10 Western Movies (sklearn PCA)')
+  plt.title('Visualization of 10 Western Movies (Surprise)')
   plt.savefig('images/method3_vis_western.png', bbox_inches='tight', dpi=300)
 
   # Plot 10 Animation movies.
@@ -66,7 +75,7 @@ def main():
   for m in (np.where([movies_data[:, 3] == 1])[1])[:10]:
     plt.plot(V_proj[0, m], V_proj[1, m], 'o', color='#ffa500')
     plt.annotate(titles[m].strip('"'), (V_proj[0, m], V_proj[1, m]))
-  plt.title('Visualization of 10 Animation Movies (sklearn PCA)')
+  plt.title('Visualization of 10 Animation Movies (Surprise)')
   plt.savefig('images/method3_vis_animation.png', bbox_inches='tight', dpi=300)
 
   # Plot 10 Film-Noir movies.
@@ -74,7 +83,7 @@ def main():
   for m in (np.where([movies_data[:, 10] == 1])[1])[:10]:
     plt.plot(V_proj[0, m], V_proj[1, m], 'o', color='#ffa500')
     plt.annotate(titles[m].strip('"'), (V_proj[0, m], V_proj[1, m]))
-  plt.title('Visualization of 10 Film-Noir Movies (sklearn PCA)')
+  plt.title('Visualization of 10 Film-Noir Movies (Surprise)')
   plt.savefig('images/method3_vis_filmnoir.png', bbox_inches='tight', dpi=300)
 
 
